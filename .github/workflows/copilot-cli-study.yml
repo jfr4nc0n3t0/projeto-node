@@ -1,0 +1,37 @@
+name: Copilot CLI - Estudo de Funcionamento
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Prompt para o Copilot CLI executar"
+        required: false
+        default: "Analise o repositório e gere um resumo dos arquivos presentes, descrevendo o propósito de cada um."
+
+permissions:
+  contents: read
+
+jobs:
+  copilot-cli-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar Copilot CLI
+        run: npm install -g @github/copilot
+
+      - name: Executar Copilot CLI
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          echo "=== Executando Copilot CLI em modo programático ==="
+          echo "Prompt: ${{ github.event.inputs.prompt }}"
+          echo ""
+          copilot -p "${{ github.event.inputs.prompt }}"
