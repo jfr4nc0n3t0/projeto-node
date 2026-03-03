@@ -36,29 +36,3 @@ jobs:
         run: |
           chmod +x scripts/copilot-apply.sh
           bash scripts/copilot-apply.sh "${{ github.event.inputs.prompt }}"
-
-      - name: Gerar README com Copilot CLI (se não existir)
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        run: |
-          if [ ! -f README.md ]; then
-            echo "=== README.md não encontrado. Pedindo ao Copilot para criar ==="
-            copilot -p "Leia todos os arquivos deste repositório e crie um README.md completo em português, com: título do projeto, descrição, tecnologias utilizadas, como instalar e como executar. Salve o conteúdo no arquivo README.md." > README.md
-            echo "=== README.md gerado. Criando branch e commit draft ==="
-            BRANCH="copilot/add-readme-$(date +%Y%m%d%H%M%S)"
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git checkout -b "$BRANCH"
-            git add README.md
-            git commit -m "docs: adiciona README.md gerado pelo Copilot CLI"
-            git push origin "$BRANCH"
-            gh pr create \
-              --title "docs: adiciona README.md gerado pelo Copilot CLI" \
-              --body "README.md criado automaticamente pelo Copilot CLI pois o arquivo não existia no repositório." \
-              --draft \
-              --base main \
-              --head "$BRANCH"
-          else
-            echo "=== README.md já existe. Nenhuma ação necessária ==="
-          fi
