@@ -30,6 +30,11 @@ jobs:
       - name: Instalar Copilot CLI
         run: npm install -g @github/copilot
 
+      - name: Set up Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Executar Copilot CLI e aplicar diff
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
