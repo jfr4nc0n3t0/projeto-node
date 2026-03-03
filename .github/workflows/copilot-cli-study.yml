@@ -30,14 +30,12 @@ jobs:
       - name: Instalar Copilot CLI
         run: npm install -g @github/copilot
 
-      - name: Executar Copilot CLI
+      - name: Executar Copilot CLI e aplicar diff
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          echo "=== Executando Copilot CLI em modo programático ==="
-          echo "Prompt: ${{ github.event.inputs.prompt }}"
-          echo ""
-          copilot -p "${{ github.event.inputs.prompt }}"
+          chmod +x scripts/copilot-apply.sh
+          bash scripts/copilot-apply.sh "${{ github.event.inputs.prompt }}"
 
       - name: Gerar README com Copilot CLI (se não existir)
         env:
